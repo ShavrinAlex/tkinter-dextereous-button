@@ -2,53 +2,64 @@ import random
 from tkinter import *
 
 
-# pos button.
-x = 5
-y = 5
+def close(event):
+    quit()
+
 
 def move(event):
-    global x, y
-    # Check x.
-    if x < width - 1 and x > 0:
-        x += random.choice([-1,0,1])
-    elif x >= width - 1:
-        x += random.choice([-1,0])
-    elif x <= 0:
-        x += random.choice([0,1])
+    global pos_column, pos_row, k
+
+    if pos_column < count_column - 1 and pos_column > 0:
+        pos_column += random.choice([-1, 0, 1])
+    elif pos_column == count_column - 1:
+        pos_column += random.choice([-1, 0])
+    elif pos_column == 0:
+        pos_column += random.choice([0, 1])
+
+    if pos_row < count_row - 1 and pos_row > 0: 
+        pos_row += random.choice([-1, 1])
+    elif pos_row == count_row - 1:
+        pos_row += random.choice([-1])
+    elif pos_row == 0:
+        pos_row += random.choice([1])
     
-    # Check y.
-    if y < height - 1 and y > 0:
-        y += random.choice([-1,0,1])
-    elif y >= height - 1:
-        y += random.choice([-1,0])
-    elif y <= 0:
-        y += random.choice([0,1])
+    if k < 3:
+        k += 1
+    else:
+        button['text'] = 'Click me!\n' + random.choice(emoji)
+        
 
-    root.title(f'{x=} {y=}')
-    button.grid(column=x, row=y, stick='nswe')
+    button.grid(row=pos_row, column=pos_column, stick='nswe')
 
+k = 0
 
-# Settings window.
+# Parametrs window.
+pixel = 60
+count_column = 4
+count_row = 4
+
+# Parameters button.
+pos_row = 2
+pos_column = 2
+emoji = ['', ')', ':)', ';)', '(', ':(', ';(', '/0_o\\']
+
+# Window.
 root = Tk()
-root['bg'] = '#c0c0c0'
 root.title('Dextereous button')
-width = 10
-height = 10
+root['bg'] = '#fbf1da'
 
-# Create grid.
-[root.grid_columnconfigure(i, minsize=80) for i in range(width)]
-[root.grid_rowconfigure(i, minsize=60) for i in range(height)]
+# Settings grid.
+for i in range(count_column):
+    root.grid_columnconfigure(i, minsize=pixel) 
+[root.grid_rowconfigure(i, minsize=pixel) for i in range(count_row)]
 
-# Create button.
 button = Button(
     root,
     text='Click me!',
-    bg='#7a51e1',
-    fg='#000000',
+    bg='#7d50e7',
 )
 
-button.grid(column=x, row=y, stick='nswe')
-button.bind('<Motion>', move)
-button.bind('<Double-Button-1>', lambda event: quit())
-
+button.bind('<ButtonRelease-1>', close)
+button.bind('<Enter>', move)
+button.grid(row=pos_row, column=pos_column, stick='nswe')
 root.mainloop()
